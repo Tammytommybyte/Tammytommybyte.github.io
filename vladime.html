@@ -1,0 +1,223 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+export function QuoteForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    institution: "",
+    eventDate: "",
+    attendees: "",
+    message: "",
+    services: [] as string[],
+  });
+
+  const createQuoteMutation = trpc.quotes.create.useMutation({
+    onSuccess: () => {
+      toast.success("¡Cotización enviada!", {
+        description: "Nos pondremos en contacto contigo pronto.",
+      });
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        institution: "",
+        eventDate: "",
+        attendees: "",
+        message: "",
+        services: [],
+      });
+    },
+    onError: (error) => {
+      toast.error("Error al enviar cotización", {
+        description: error.message,
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    createQuoteMutation.mutate({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      institution: formData.institution || undefined,
+      eventDate: formData.eventDate ? new Date(formData.eventDate) : undefined,
+      attendees: formData.attendees ? parseInt(formData.attendees) : undefined,
+      services: formData.services.length > 0 ? JSON.stringify(formData.services) : undefined,
+      message: formData.message || undefined,
+    });
+  };
+
+  const handleServiceToggle = (service: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      services: prev.services.includes(service)
+        ? prev.services.filter((s) => s !== service)
+        : [...prev.services, service],
+    }));
+  };
+
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Nombre Completo *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Correo Electrónico *
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                placeholder="tu@email.com"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Teléfono
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                placeholder="55 1234 5678"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Institución
+              </label>
+              <input
+                type="text"
+                value={formData.institution}
+                onChange={(e) =>
+                  setFormData({ ...formData, institution: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                placeholder="Nombre de tu escuela/universidad"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Fecha del Evento
+              </label>
+              <input
+                type="date"
+                value={formData.eventDate}
+                onChange={(e) =>
+                  setFormData({ ...formData, eventDate: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold mb-2">
+                Número de Asistentes
+              </label>
+              <input
+                type="number"
+                value={formData.attendees}
+                onChange={(e) =>
+                  setFormData({ ...formData, attendees: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                placeholder="Ej: 150"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">
+              Servicios de Interés
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {["Fotografía", "Anillos", "Togas", "Diplomas", "Paquetes", "Eventos"].map(
+                (service) => (
+                  <label
+                    key={service}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.services.includes(service)}
+                      onChange={() => handleServiceToggle(service)}
+                      className="rounded border-input"
+                    />
+                    <span className="text-sm">{service}</span>
+                  </label>
+                )
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-2">Mensaje</label>
+            <textarea
+              rows={4}
+              value={formData.message}
+              onChange={(e) =>
+                setFormData({ ...formData, message: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+              placeholder="Cuéntanos más sobre tu evento..."
+            />
+          </div>
+
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={createQuoteMutation.isPending}
+          >
+            {createQuoteMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Enviando...
+              </>
+            ) : (
+              "Enviar Solicitud"
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
