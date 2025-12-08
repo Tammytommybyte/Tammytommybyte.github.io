@@ -1,223 +1,198 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vladii Cortés — Portafolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portafolio de Vladii Cortés — tecnología, datos y creatividad." />
 
-export function QuoteForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    institution: "",
-    eventDate: "",
-    attendees: "",
-    message: "",
-    services: [] as string[],
-  });
+  <!-- Fuente Google (opcional, pero la deja más bonita) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-  const createQuoteMutation = trpc.quotes.create.useMutation({
-    onSuccess: () => {
-      toast.success("¡Cotización enviada!", {
-        description: "Nos pondremos en contacto contigo pronto.",
-      });
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        institution: "",
-        eventDate: "",
-        attendees: "",
-        message: "",
-        services: [],
-      });
-    },
-    onError: (error) => {
-      toast.error("Error al enviar cotización", {
-        description: error.message,
-      });
-    },
-  });
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="glitch-bg"></div>
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    createQuoteMutation.mutate({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || undefined,
-      institution: formData.institution || undefined,
-      eventDate: formData.eventDate ? new Date(formData.eventDate) : undefined,
-      attendees: formData.attendees ? parseInt(formData.attendees) : undefined,
-      services: formData.services.length > 0 ? JSON.stringify(formData.services) : undefined,
-      message: formData.message || undefined,
-    });
-  };
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <div class="logo-mark">VC</div>
+        <ul class="nav-links">
+          <li><a href="#sobre-mi">Sobre mí</a></li>
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
 
-  const handleServiceToggle = (service: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      services: prev.services.includes(service)
-        ? prev.services.filter((s) => s !== service)
-        : [...prev.services, service],
-    }));
-  };
+      <section class="hero">
+        <p class="hero-tag glitch-text">tecnología · datos · creatividad</p>
+        <h1 class="hero-title">
+          Vladii Cortés
+        </h1>
+        <p class="hero-subtitle">
+          Especialista en tecnología, análisis de datos y proyectos digitales con corazón creativo.  
+          Construyo soluciones simples, claras y humanas.
+        </p>
+        <div class="hero-actions">
+          <a href="#proyectos" class="btn primary">Ver proyectos</a>
+          <a href="#contacto" class="btn ghost">Hablemos</a>
+        </div>
+      </section>
+    </div>
+  </header>
 
-  return (
-    <Card>
-      <CardContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Nombre Completo *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                placeholder="Tu nombre"
-              />
+  <main>
+    <!-- SOBRE MI -->
+    <section id="sobre-mi" class="section">
+      <div class="container section-grid">
+        <div>
+          <h2 class="section-title">Sobre mí</h2>
+          <p class="section-text">
+            Soy una persona que se mueve entre la tecnología, los datos y la creatividad. 
+            Me gusta resolver problemas reales con soluciones claras, bien estructuradas 
+            y con un toque de diseño. Disfruto organizar información, automatizar procesos 
+            y crear experiencias digitales que se sientan cercanas y útiles.
+          </p>
+          <p class="section-text">
+            Busco oportunidades donde pueda aportar orden, visión y sensibilidad, 
+            ya sea en equipos de tecnología, análisis de datos, producto digital o 
+            proyectos creativos híbridos.
+          </p>
+        </div>
+        <div class="card highlighted">
+          <h3 class="card-title">Qué puedo aportar</h3>
+          <ul class="card-list">
+            <li>🌐 Organización y estructura de proyectos digitales</li>
+            <li>📊 Manejo y análisis básico de datos</li>
+            <li>🧩 Pensamiento crítico y soluciones creativas</li>
+            <li>🤝 Comunicación clara y empatía en equipo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">Skills & herramientas</h2>
+        <p class="section-text center">
+          Una mezcla de tecnología, organización y creatividad.  
+          Esta lista crecerá con cada proyecto nuevo.
+        </p>
+
+        <div class="tags-grid">
+          <span class="tag">Git & GitHub</span>
+          <span class="tag">HTML & CSS</span>
+          <span class="tag">JavaScript básico</span>
+          <span class="tag">Análisis de datos</span>
+          <span class="tag">Excel / Hojas de cálculo</span>
+          <span class="tag">Canva / Diseño digital</span>
+          <span class="tag">Gestión de proyectos</span>
+          <span class="tag">Documentación clara</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROYECTOS -->
+    <section id="proyectos" class="section">
+      <div class="container">
+        <h2 class="section-title">Proyectos destacados</h2>
+        <p class="section-text center">
+          Aquí muestro algunos proyectos que representan cómo pienso y construyo.  
+          Pueden ser técnicos, creativos o una mezcla de ambos.
+        </p>
+
+        <div class="projects-grid">
+          <!-- Proyecto 1 -->
+          <article class="card project-card">
+            <h3 class="card-title">Portafolio Web</h3>
+            <p class="card-text">
+              Sitio web personal para mostrar mi perfil profesional, skills y proyectos. 
+              Desarrollado con HTML, CSS y GitHub Pages.
+            </p>
+            <div class="project-meta">
+              <span class="pill">HTML</span>
+              <span class="pill">CSS</span>
+              <span class="pill">GitHub Pages</span>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Correo Electrónico *
-              </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                placeholder="tu@email.com"
-              />
+            <div class="project-links">
+              <!-- Reemplaza # con tus links reales -->
+              <a href="#" target="_blank" rel="noopener noreferrer">Ver sitio</a>
+              <a href="#" target="_blank" rel="noopener noreferrer">Ver código</a>
             </div>
-          </div>
+          </article>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Teléfono
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                placeholder="55 1234 5678"
-              />
+          <!-- Proyecto 2 -->
+          <article class="card project-card">
+            <h3 class="card-title">API básica (CRUD)</h3>
+            <p class="card-text">
+              API REST sencilla para gestionar recursos (crear, leer, actualizar, borrar).
+              Ideal para demostrar lógica backend y organización del código.
+            </p>
+            <div class="project-meta">
+              <span class="pill">Node.js</span>
+              <span class="pill">Express</span>
+              <span class="pill">MongoDB</span>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Institución
-              </label>
-              <input
-                type="text"
-                value={formData.institution}
-                onChange={(e) =>
-                  setFormData({ ...formData, institution: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                placeholder="Nombre de tu escuela/universidad"
-              />
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener noreferrer">Ver documentación</a>
+              <a href="#" target="_blank" rel="noopener noreferrer">Ver código</a>
             </div>
-          </div>
+          </article>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Fecha del Evento
-              </label>
-              <input
-                type="date"
-                value={formData.eventDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, eventDate: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-              />
+          <!-- Proyecto 3 -->
+          <article class="card project-card">
+            <h3 class="card-title">Herramienta creativa</h3>
+            <p class="card-text">
+              Pequeña herramienta digital pensada para simplificar una tarea cotidiana 
+              (por ejemplo, organizar ideas, notas o hábitos) con una interfaz clara y mínima.
+            </p>
+            <div class="project-meta">
+              <span class="pill">JavaScript</span>
+              <span class="pill">UI sencilla</span>
             </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Número de Asistentes
-              </label>
-              <input
-                type="number"
-                value={formData.attendees}
-                onChange={(e) =>
-                  setFormData({ ...formData, attendees: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                placeholder="Ej: 150"
-              />
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener noreferrer">Probar herramienta</a>
+              <a href="#" target="_blank" rel="noopener noreferrer">Ver código</a>
             </div>
-          </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-          <div>
-            <label className="block text-sm font-semibold mb-2">
-              Servicios de Interés
-            </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {["Fotografía", "Anillos", "Togas", "Diplomas", "Paquetes", "Eventos"].map(
-                (service) => (
-                  <label
-                    key={service}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={formData.services.includes(service)}
-                      onChange={() => handleServiceToggle(service)}
-                      className="rounded border-input"
-                    />
-                    <span className="text-sm">{service}</span>
-                  </label>
-                )
-              )}
-            </div>
-          </div>
+    <!-- CONTACTO -->
+    <section id="contacto" class="section section-alt">
+      <div class="container contact-block">
+        <div>
+          <h2 class="section-title">Contacto</h2>
+          <p class="section-text">
+            Si te interesa conocer más de mi trabajo, colaborar en un proyecto 
+            o explorar una oportunidad laboral, puedes escribirme directamente.
+          </p>
+        </div>
+        <div class="contact-info">
+          <!-- Reemplaza estos datos por los tuyos reales -->
+          <p><strong>Correo:</strong> <a href="mailto:tucorreo@example.com">tucorreo@example.com</a></p>
+          <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/tu-usuario" target="_blank" rel="noopener noreferrer">linkedin.com/in/tu-usuario</a></p>
+          <p><strong>GitHub:</strong> <a href="https://github.com/tu-usuario" target="_blank" rel="noopener noreferrer">github.com/tu-usuario</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-          <div>
-            <label className="block text-sm font-semibold mb-2">Mensaje</label>
-            <textarea
-              rows={4}
-              value={formData.message}
-              onChange={(e) =>
-                setFormData({ ...formData, message: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-              placeholder="Cuéntanos más sobre tu evento..."
-            />
-          </div>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Vladii Cortés. Hecho con un poco de glitch y mucha intención.</p>
+    </div>
+  </footer>
 
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={createQuoteMutation.isPending}
-          >
-            {createQuoteMutation.isPending ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Enviando...
-              </>
-            ) : (
-              "Enviar Solicitud"
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
-}
-
+  <script>
+    // Año automático en el footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
